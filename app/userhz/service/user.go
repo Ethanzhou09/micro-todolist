@@ -5,13 +5,12 @@ import (
 	"sync"
 	"todolist/app/user/repository/db/dao"
 	"todolist/app/user/repository/db/model"
-	"todolist/idl/pb"
+	"todolist/idl/kitex_gen/api"
 	"todolist/pkg/e"
 )
 import "context"
 
-type Usersrv struct {
-}
+type Usersrv struct{}
 
 var UsersrvIns *Usersrv
 var UsersrvOnce sync.Once
@@ -33,44 +32,46 @@ func GetUserSrvHungury() *Usersrv {
 	return UsersrvIns
 }
 
-func (u *Usersrv) UserLogin(ctx context.Context, req *pb.UserRequest, resp *pb.UserResponse) (err error) {
+func (u *Usersrv) UserLogin(ctx context.Context, req *api.UserRequest) (resp *api.UserResponse, err error) {
 	// 查看用户是否存在
+	resp = &api.UserResponse{}
 	resp.Code = e.Success
 	user, err := dao.NewUserDao(ctx).FindUserByUsername(req.Username)
 	if err != nil {
-		return err
+		return
 	}
 	if user.ID == 0 {
 		err = errors.New("用户不存在")
 		resp.Code = e.Error
-		return err
+		return
 	}
 	// 验证密码是否正确
 	if user.CheckPassword(req.Password) == false {
 		err = errors.New("密码错误")
 		resp.Code = e.Error
-		return err
+		return
 	}
-	resp.UserDetail = BuildUser(user)
-	return nil
+	resp.User = BuildUser(user)
+	return
 }
 
-func (u *Usersrv) UserRegister(ctx context.Context, req *pb.UserRequest, resp *pb.UserResponse) (err error) {
+func (u *Usersrv) UserRegister(ctx context.Context, req *api.UserRequest) (resp *api.UserResponse, err error) {
+	resp = &api.UserResponse{}
 	resp.Code = e.Success
 	// 验证两次输入密码一致
 	if req.Password != req.PasswordConfirm {
 		err = errors.New("两次输入密码不一致")
 		resp.Code = e.Error
-		return err
+		return
 	}
 	user, err := dao.NewUserDao(ctx).FindUserByUsername(req.Username)
 	if err != nil {
-		return err
+		return
 	}
 	if user.ID > 0 {
 		err = errors.New("用户已存在")
 		resp.Code = e.Error
-		return err
+		return
 	}
 	user = &model.User{
 		Username: req.Username,
@@ -79,19 +80,19 @@ func (u *Usersrv) UserRegister(ctx context.Context, req *pb.UserRequest, resp *p
 	err = user.SetPassword(req.Password)
 	if err != nil {
 		resp.Code = e.Error
-		return err
+		return
 	}
 	// 创建用户
 	if err = dao.NewUserDao(ctx).CreateUser(user); err != nil {
 		resp.Code = e.Error
-		return err
+		return
 	}
-	return nil
+	return
 }
 
-func BuildUser(item *model.User) *pb.UserModel {
-	return &pb.UserModel{
-		Id:        uint32(item.ID),
+func BuildUser(item *model.User) *api.UserModel {
+	return &api.UserModel{
+		Id:        int64(item.ID),
 		Username:  item.Username,
 		CreatedAt: item.CreatedAt.Unix(),
 		UpdatedAt: item.UpdatedAt.Unix(),

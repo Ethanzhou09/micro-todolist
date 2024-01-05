@@ -8,8 +8,8 @@ import (
 // 定义数据库模型
 type User struct {
 	gorm.Model
-	Username string `gorm:"type:varchar(20);not null;unique" json:"username"`
-	Password string `gorm:"type:varchar(20);not null" json:"password"`
+	Username string `gorm:"not null;unique" json:"username"`
+	Password string `gorm:"not null" json:"password"`
 }
 
 const PasswordCost = 12

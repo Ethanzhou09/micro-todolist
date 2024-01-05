@@ -3,7 +3,7 @@ package dao
 import (
 	"context"
 	"gorm.io/gorm"
-	"todolist/app/user/repository/db/model"
+	"todolist/app/userhz/repository/db/model"
 )
 
 // 定义user的curd操作

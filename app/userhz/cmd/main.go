@@ -2,25 +2,29 @@ package main
 
 import (
 	"fmt"
-	"go-micro.dev/v4"
-	"go-micro.dev/v4/registry"
+	"github.com/cloudwego/kitex/pkg/rpcinfo"
+	"github.com/cloudwego/kitex/server"
+	etcd "github.com/kitex-contrib/registry-etcd"
+	"log"
+	"net"
 	"todolist/app/user/repository/db/dao"
-	"todolist/app/user/service"
+	"todolist/app/userhz/service"
 	"todolist/config"
-	"todolist/idl/pb"
+	"todolist/idl/kitex_gen/api/myservice"
 )
 
 func main() {
 	config.Init()
 	dao.InitDB()
 	// etcd注册
-	etcdReg := registry.NewRegistry(registry.Addrs(fmt.Sprintf("%s:%s", config.EtcdHost, config.EtcdPort)))
+	etcdReg, err := etcd.NewEtcdRegistry([]string{fmt.Sprintf("%s:%s", config.EtcdHost, config.EtcdPort)})
+	if err != nil {
+		log.Fatal(err)
+	}
 	// 注册微服务
-	microService := micro.NewService(
-		micro.Name("rpcUserService"),
-		micro.Address(config.UserServiceAddress),
-		micro.Registry(etcdReg))
-	microService.Init()
-	_ = pb.RegisterUserServiceHandler(microService.Server(), service.GetUserSrv())
-	_ = microService.Run()
+	addr, err := net.ResolveTCPAddr("tcp", config.UserServiceAddress)
+	microserve := myservice.NewServer(service.GetUserSrv(), server.WithRegistry(etcdReg), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+		ServiceName: "rpcUserService",
+	}), server.WithServiceAddr(addr))
+	microserve.Run()
 }

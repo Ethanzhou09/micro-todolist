@@ -1,19 +1,24 @@
 package rpc
 
 import (
-	"go-micro.dev/v4"
-	"todolist/idl/pb"
+	"fmt"
+	"github.com/cloudwego/kitex/client"
+	etcd "github.com/kitex-contrib/registry-etcd"
+	"log"
+	"todolist/config"
+	"todolist/idl/kitex_gen/api/myservice"
 )
 
 var (
-	UserService pb.UserService
+	Client myservice.Client
 )
 
 func InitRPC() {
 	// 初始化rpc服务
-	userMicroService := micro.NewService(micro.Name("userService.client"))
-	// 初始化rpc客户端
-	userService := pb.NewUserService("rpcUserService", userMicroService.Client())
-	// 赋值给全局变量
-	UserService = userService
+	r, err := etcd.NewEtcdResolver([]string{fmt.Sprintf("%s:%s", config.EtcdHost, config.EtcdPort)})
+	if err != nil {
+		log.Fatal(err)
+	}
+	client := myservice.MustNewClient("rpcUserService", client.WithResolver(r))
+	Client = client
 }

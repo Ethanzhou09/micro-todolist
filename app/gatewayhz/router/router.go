@@ -6,8 +6,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/utils"
-	"github.com/gin-gonic/gin"
-	"todolist/app/gateway/http"
+	"todolist/app/gatewayhz/http"
 )
 
 func NewhzRouter(r registry.Registry, addr string) *server.Hertz {
@@ -24,22 +23,8 @@ func NewhzRouter(r registry.Registry, addr string) *server.Hertz {
 		v1.GET("ping", func(c context.Context, ctx *app.RequestContext) {
 			ctx.JSON(200, "success")
 		})
-
 		//v1.POST("user/login", http.UserLoginHandler)
-		//v1.POST("user/register", http.UserRegisterHandler)
-	}
-	return hertzRouter
-}
-
-func NewRouter() *gin.Engine {
-	ginRouter := gin.Default()
-	v1 := ginRouter.Group("/api/v1")
-	{
-		v1.GET("ping", func(ctx *gin.Context) {
-			ctx.JSON(200, "success")
-		})
-		v1.POST("user/login", http.UserLoginHandler)
 		v1.POST("user/register", http.UserRegisterHandler)
 	}
-	return ginRouter
+	return hertzRouter
 }
