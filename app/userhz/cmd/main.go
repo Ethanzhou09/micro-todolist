@@ -7,7 +7,7 @@ import (
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"
 	"net"
-	"todolist/app/user/repository/db/dao"
+	"todolist/app/userhz/repository/db/dao"
 	"todolist/app/userhz/service"
 	"todolist/config"
 	"todolist/idl/kitex_gen/api/myservice"

@@ -3,8 +3,8 @@ package service
 import (
 	"errors"
 	"sync"
-	"todolist/app/user/repository/db/dao"
-	"todolist/app/user/repository/db/model"
+	"todolist/app/userhz/repository/db/dao"
+	"todolist/app/userhz/repository/db/model"
 	"todolist/idl/kitex_gen/api"
 	"todolist/pkg/e"
 )
