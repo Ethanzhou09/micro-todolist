@@ -7,6 +7,7 @@ import (
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"
 	"net"
+	"time"
 	"todolist/app/userhz/repository/db/dao"
 	"todolist/app/userhz/service"
 	"todolist/config"
@@ -23,8 +24,11 @@ func main() {
 	}
 	// 注册微服务
 	addr, err := net.ResolveTCPAddr("tcp", config.UserServiceAddress)
+	if err != nil {
+		log.Fatal(err)
+	}
 	microserve := myservice.NewServer(service.GetUserSrv(), server.WithRegistry(etcdReg), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: "rpcUserService",
-	}), server.WithServiceAddr(addr))
+	}), server.WithServiceAddr(addr), server.WithReadWriteTimeout(5*time.Second), server.WithExitWaitTime(5*time.Second))
 	microserve.Run()
 }

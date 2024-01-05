@@ -14,12 +14,12 @@ func UserRegisterHandler(c context.Context, ctx *app.RequestContext) {
 		ctx.JSON(http.StatusOK, "UserRegisterHandler-ShouldBindJSON")
 		return
 	}
-	resp, err := rpc.UserRegister(c, &req)
+	_, err := rpc.UserRegister(c, &req)
 	if err != nil {
 		ctx.JSON(http.StatusOK, "UserRegisterHandler-UserRegister-RPC")
 		return
 	}
-	ctx.JSON(http.StatusOK, resp.User.Username+" create success")
+	ctx.JSON(http.StatusOK, "create success")
 }
 
 //func UserLoginHandler(ctx *gin.Context) {

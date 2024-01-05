@@ -5,6 +5,7 @@ import (
 	"github.com/cloudwego/kitex/client"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"
+	"time"
 	"todolist/config"
 	"todolist/idl/kitex_gen/api/myservice"
 )
@@ -19,6 +20,10 @@ func InitRPC() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	client := myservice.MustNewClient("rpcUserService", client.WithResolver(r))
-	Client = client
+	c, err := myservice.NewClient("rpcUserService", client.WithResolver(r), client.WithConnectTimeout(5*time.Second),
+		client.WithRPCTimeout(0))
+	if err != nil {
+		log.Fatal(err)
+	}
+	Client = c
 }
