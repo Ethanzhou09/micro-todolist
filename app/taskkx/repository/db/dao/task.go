@@ -3,7 +3,7 @@ package dao
 import (
 	"context"
 	"gorm.io/gorm"
-	"todolist/app/taskkitex/repository/db/model"
+	"todolist/app/taskkx/repository/db/model"
 )
 
 type TaskDao struct {

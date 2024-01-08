@@ -2,7 +2,7 @@ package script
 
 import (
 	"context"
-	"todolist/app/taskkitex/repository/mq/task"
+	"todolist/app/taskkx/repository/mq/task"
 )
 
 // 监听

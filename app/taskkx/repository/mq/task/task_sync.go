@@ -3,8 +3,8 @@ package task
 import (
 	"context"
 	"encoding/json"
-	"todolist/app/taskkitex/repository/mq"
-	"todolist/app/taskkitex/service"
+	"todolist/app/taskkx/repository/mq"
+	"todolist/app/taskkx/service"
 	"todolist/consts"
 	"todolist/idl/task/kitex_gen/api"
 )

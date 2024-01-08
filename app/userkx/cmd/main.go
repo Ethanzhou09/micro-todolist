@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
@@ -9,34 +8,27 @@ import (
 	"log"
 	"net"
 	"time"
-	"todolist/app/taskkitex/repository/db/dao"
-	"todolist/app/taskkitex/script"
-	"todolist/app/taskkitex/service"
+	"todolist/app/userkx/repository/db/dao"
+	"todolist/app/userkx/service"
 	"todolist/config"
-	"todolist/idl/task/kitex_gen/api/taskservice"
+	"todolist/idl/kitex_gen/api/myservice"
 )
 
 func main() {
 	config.Init()
 	dao.InitDB()
-	loadingScript()
 	// etcd注册
 	etcdReg, err := etcd.NewEtcdRegistry([]string{fmt.Sprintf("%s:%s", config.EtcdHost, config.EtcdPort)})
 	if err != nil {
 		log.Fatal(err)
 	}
 	// 注册微服务
-	addr, err := net.ResolveTCPAddr("tcp", config.TaskServiceAddress)
+	addr, err := net.ResolveTCPAddr("tcp", config.UserServiceAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
-	microserve := taskservice.NewServer(service.GetTaskSrv(), server.WithRegistry(etcdReg), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: "rpcTaskService",
+	microserve := myservice.NewServer(service.GetUserSrv(), server.WithRegistry(etcdReg), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+		ServiceName: "rpcUserService",
 	}), server.WithServiceAddr(addr), server.WithReadWriteTimeout(5*time.Second), server.WithExitWaitTime(5*time.Second))
 	microserve.Run()
-}
-
-func loadingScript() {
-	ctx := context.Background()
-	go script.TaskCreateSync(ctx)
 }

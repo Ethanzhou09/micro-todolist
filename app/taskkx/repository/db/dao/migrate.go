@@ -1,6 +1,6 @@
 package dao
 
-import "todolist/app/taskkitex/repository/db/model"
+import "todolist/app/taskkx/repository/db/model"
 
 func migration() {
 	// 把模型与数据库中的表对应起来

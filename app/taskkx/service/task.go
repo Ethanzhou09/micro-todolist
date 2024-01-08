@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"sync"
-	"todolist/app/taskkitex/repository/db/dao"
-	"todolist/app/taskkitex/repository/db/model"
-	"todolist/app/taskkitex/repository/mq"
+	"todolist/app/taskkx/repository/db/dao"
+	"todolist/app/taskkx/repository/db/model"
+	"todolist/app/taskkx/repository/mq"
 	"todolist/idl/task/kitex_gen/api"
 	"todolist/pkg/e"
 )
