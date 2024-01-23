@@ -10,6 +10,7 @@ import (
 	"net"
 	"time"
 	"todolist/app/taskkx/repository/db/dao"
+	"todolist/app/taskkx/repository/mq"
 	"todolist/app/taskkx/script"
 	"todolist/app/taskkx/service"
 	"todolist/config"
@@ -19,6 +20,7 @@ import (
 func main() {
 	config.Init()
 	dao.InitDB()
+	mq.InitRabbitMq()
 	loadingScript()
 	// etcd注册
 	etcdReg, err := etcd.NewEtcdRegistry([]string{fmt.Sprintf("%s:%s", config.EtcdHost, config.EtcdPort)})

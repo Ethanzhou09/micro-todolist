@@ -18,7 +18,7 @@ func (s *SyncTask) RunTaskService(ctx context.Context) (err error) {
 	if err != nil {
 		return
 	}
-	var forever chan struct{}
+	//var forever chan struct{}
 	go func() {
 		for d := range msgs {
 			// 1.解析消息
@@ -29,10 +29,10 @@ func (s *SyncTask) RunTaskService(ctx context.Context) (err error) {
 			}
 			// 2.落库
 			err = service.TaskMq2DB(ctx, req)
-
+			d.Ack(false)
 		}
 	}()
 	// 5.阻塞
-	<-forever
+	//<-forever
 	return nil
 }

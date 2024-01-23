@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"todolist/app/gatewayhz/rpc"
 	"todolist/idl/kitex_gen/api"
+	"todolist/pkg/jwt"
+	"todolist/types"
 )
 
 func UserRegisterHandler(c context.Context, ctx *app.RequestContext) {
@@ -22,26 +24,25 @@ func UserRegisterHandler(c context.Context, ctx *app.RequestContext) {
 	ctx.JSON(http.StatusOK, "create success")
 }
 
-//func UserLoginHandler(ctx *gin.Context) {
-//	var req api.UserRequest
-//	if err := ctx.ShouldBindJSON(&req); err != nil {
-//		ctx.JSON(http.StatusOK, ctl.RespError(ctx, err, "UserLoginHandler-ShouldBindJSON"))
-//		return
-//	}
-//	userResp, err := rpc.UserLogin(ctx, &req)
-//	if err != nil {
-//		ctx.JSON(http.StatusOK, ctl.RespError(ctx, err, "UserLoginHandler-UserLogin-RPC"))
-//		return
-//	}
-//	token, err := jwt.GenerateToken(uint(userResp.UserDetail.Id))
-//	//ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, userResp))
-//	if err != nil {
-//		ctx.JSON(http.StatusOK, ctl.RespError(ctx, err, "UserLoginHandler-GenerateToken"))
-//		return
-//	}
-//	res := &types.TokenData{
-//		userResp,
-//		token,
-//	}
-//	ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, res))
-//}
+func UserLoginHandler(c context.Context, ctx *app.RequestContext) {
+	var req api.UserRequest
+	if err := ctx.Bind(&req); err != nil {
+		ctx.JSON(http.StatusOK, "UserLoginHandler-ShouldBindJSON")
+		return
+	}
+	userResp, err := rpc.UserLogin(c, &req)
+	if err != nil {
+		ctx.JSON(http.StatusOK, "UserLoginHandler-UserLogin-RPC")
+		return
+	}
+	token, err := jwt.GenerateToken(uint(userResp.User.Id))
+	if err != nil {
+		ctx.JSON(http.StatusOK, "UserLoginHandler-GenerateToken")
+		return
+	}
+	res := &types.TokenData{
+		userResp,
+		token,
+	}
+	ctx.JSON(http.StatusOK, res)
+}

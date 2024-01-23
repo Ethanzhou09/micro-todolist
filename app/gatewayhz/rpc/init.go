@@ -8,10 +8,12 @@ import (
 	"time"
 	"todolist/config"
 	"todolist/idl/kitex_gen/api/myservice"
+	"todolist/idl/task/kitex_gen/api/taskservice"
 )
 
 var (
-	Client myservice.Client
+	Client     myservice.Client
+	TaskClient taskservice.Client
 )
 
 func InitRPC() {
@@ -26,4 +28,11 @@ func InitRPC() {
 		log.Fatal(err)
 	}
 	Client = c
+
+	taskc, err := taskservice.NewClient("rpcTaskService", client.WithResolver(r), client.WithConnectTimeout(5*time.Second),
+		client.WithRPCTimeout(0))
+	if err != nil {
+		log.Fatal(err)
+	}
+	TaskClient = taskc
 }
