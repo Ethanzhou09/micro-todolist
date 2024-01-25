@@ -5,7 +5,6 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"todolist/app/gatewayhz/rpc"
 	"todolist/idl/task/kitex_gen/api"
-	"todolist/pkg/ctl"
 )
 
 func CreateTaskHandler(c context.Context, ctx *app.RequestContext) {
@@ -13,15 +12,8 @@ func CreateTaskHandler(c context.Context, ctx *app.RequestContext) {
 	if err := ctx.Bind(&req); err != nil {
 		print(err.Error())
 		ctx.JSON(200, err.Error())
-		//ctx.JSON(200, "CreateTaskHandler-ShouldBindJSON")
 		return
 	}
-	//user, err := ctl.GetUserInfoHz(ctx)
-	//if err != nil {
-	//	ctx.JSON(200, "CreateTaskHandler-GetUserInfo")
-	//	return
-	//}
-	//req.Uid = int64(user.Id)
 	taskRes, err := rpc.TaskCreate(c, &req)
 	if err != nil {
 		ctx.JSON(200, "CreateTaskHandler-TaskCreate")
@@ -36,12 +28,6 @@ func UpdateTaskHandler(c context.Context, ctx *app.RequestContext) {
 		ctx.JSON(200, "CreateTaskHandler-ShouldBindJSON")
 		return
 	}
-	user, err := ctl.GetUserInfo(c)
-	if err != nil {
-		ctx.JSON(200, "CreateTaskHandler-GetUserInfo")
-		return
-	}
-	req.Uid = int64(user.Id)
 	taskRes, err := rpc.TaskUpdate(c, &req)
 	if err != nil {
 		ctx.JSON(200, "CreateTaskHandler-TaskUpdate")
@@ -56,12 +42,6 @@ func DeleteTaskHandler(c context.Context, ctx *app.RequestContext) {
 		ctx.JSON(200, "CreateTaskHandler-ShouldBindJSON")
 		return
 	}
-	user, err := ctl.GetUserInfo(c)
-	if err != nil {
-		ctx.JSON(200, "CreateTaskHandler-GetUserInfo")
-		return
-	}
-	req.Uid = int64(user.Id)
 	taskRes, err := rpc.TaskDelete(c, &req)
 	if err != nil {
 		ctx.JSON(200, "CreateTaskHandler-TaskDelete")
@@ -76,12 +56,6 @@ func GetTaskHandler(c context.Context, ctx *app.RequestContext) {
 		ctx.JSON(200, "CreateTaskHandler-ShouldBindJSON")
 		return
 	}
-	user, err := ctl.GetUserInfo(c)
-	if err != nil {
-		ctx.JSON(200, "CreateTaskHandler-GetUserInfo")
-		return
-	}
-	req.Uid = int64(user.Id)
 	taskRes, err := rpc.TaskGet(c, &req)
 	if err != nil {
 		ctx.JSON(200, "CreateTaskHandler-TaskGet")
@@ -96,12 +70,6 @@ func TaskListGetHandler(c context.Context, ctx *app.RequestContext) {
 		ctx.JSON(200, "CreateTaskHandler-ShouldBindJSON")
 		return
 	}
-	user, err := ctl.GetUserInfo(c)
-	if err != nil {
-		ctx.JSON(200, "CreateTaskHandler-GetUserInfo")
-		return
-	}
-	req.Uid = int64(user.Id)
 	taskRes, err := rpc.TaskListGet(c, &req)
 	if err != nil {
 		ctx.JSON(200, "CreateTaskHandler-TaskListGet")

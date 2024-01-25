@@ -7,6 +7,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"todolist/app/gatewayhz/http"
+	"todolist/app/gatewayhz/middleware"
 )
 
 func NewhzRouter(r registry.Registry, addr string) *server.Hertz {
@@ -26,7 +27,7 @@ func NewhzRouter(r registry.Registry, addr string) *server.Hertz {
 		v1.POST("user/login", http.UserLoginHandler)
 		v1.POST("user/register", http.UserRegisterHandler)
 		authed := v1.Group("/")
-		//authed.Use(middleware.JWT())
+		authed.Use(middleware.JWT())
 		{
 			authed.POST("task", http.CreateTaskHandler)
 			authed.POST("update_task", http.UpdateTaskHandler)

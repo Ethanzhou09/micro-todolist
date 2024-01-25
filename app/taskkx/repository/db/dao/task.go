@@ -23,6 +23,7 @@ func (dao *TaskDao) CreateTask(data *model.Task) (err error) {
 }
 
 func (dao *TaskDao) ListTaskByUserId(userid uint64, start, limit int) (r []*model.Task, count int64, err error) {
+	r = []*model.Task{}
 	err = dao.Model(&model.Task{}).Offset(start).Limit(limit).Where("uid = ?", userid).Find(r).Error
 	if err != nil {
 		return
@@ -32,6 +33,7 @@ func (dao *TaskDao) ListTaskByUserId(userid uint64, start, limit int) (r []*mode
 }
 
 func (dao *TaskDao) GetTaskById(tid, uid uint64) (r *model.Task, err error) {
+	r = &model.Task{}
 	err = dao.Model(&model.Task{}).Where("id = ? and uid = ?", tid, uid).Find(r).Error
 	return
 }
@@ -42,7 +44,7 @@ func (dao *TaskDao) DeleteTask(tid, uid uint64) (err error) {
 }
 
 func (dao *TaskDao) UpdateTask(req *api.TaskRequest) (err error) {
-	var r *model.Task
+	r := &model.Task{}
 	err = dao.Model(&model.Task{}).Where("id = ? and uid = ?", req.Id, req.Uid).Find(r).Error
 	if err != nil {
 		return
